@@ -19,51 +19,9 @@ P= 8.032e5 # in pa (at half-height)
 
 g=9.81; # gravity (in m/s^2)
 
-def get_temperature(z,T,Tt,Tb,lambd,q):
-	"""	
-	Calculates the temperature profile based on a z-array using an iterature method
-	"""
-
-	NX     = np.size(z)
-	HEIGHT = z[-1]-z[0]
-	h      = 1.*HEIGHT/(NX-1);
-	T[0]   = Tb;
-	err    = 1;
-	TDelta = 0.001;
-	count  = 0;
-
-	while(err>0.0001):
-		count+=1;
-		low=0;
-		high=0;
-		T_tOld=T[NX-1];
-		T[0] = Tb; 
-		
-		for i in range(NX-1):
-			k1 = -q * h/lambd[i];
-			T[i+1] = (T[i]+k1);
-			# start value
-	
-		Tmax=0;
-	
-		# now check how close T[NX-1] is to T_t
-		err=np.sqrt((T[NX-1]-Tt)*(T[NX-1]-Tt));
-		
-		TDeltaOld = TDelta;
-
-		if(T[NX-1]==T_tOld):
-			TDelta = -0.1*(T[NX-1]-Tt);
-		else:
-			TDelta= -0.1*(T[NX-1]-Tt)*(TDeltaOld)/(T[NX-1]-T_tOld);
-		
-		q = q + lambd[0]*TDelta;
-	
-		T_tOld = T[NX-1];
-
-	return T,q;
 
 
-def get_temperature2(z,Tt,Tb,lambd):
+def get_temperature(z,Tt,Tb,lambd):
 	"""
 	Calculates the vertical temperature profile T(z) at a given, top plate temperature (Tt), bottom
 	plate temperature (Tb), profile of the thermal conductivity (lambda)
@@ -105,6 +63,48 @@ def get_temperature2(z,Tt,Tb,lambd):
 	
 	return T,(Tb-Tt)/int_inf_lambd[NX-1];
 
+def get_temperature2(z,T,Tt,Tb,lambd,q):
+	"""	
+	Calculates the temperature profile based on a z-array using an iterature method
+	"""
+
+	NX     = np.size(z)
+	HEIGHT = z[-1]-z[0]
+	h      = 1.*HEIGHT/(NX-1);
+	T[0]   = Tb;
+	err    = 1;
+	TDelta = 0.001;
+	count  = 0;
+
+	while(err>0.0001):
+		count+=1;
+		low=0;
+		high=0;
+		T_tOld=T[NX-1];
+		T[0] = Tb; 
+		
+		for i in range(NX-1):
+			k1 = -q * h/lambd[i];
+			T[i+1] = (T[i]+k1);
+			# start value
+	
+		Tmax=0;
+	
+		# now check how close T[NX-1] is to T_t
+		err=np.sqrt((T[NX-1]-Tt)*(T[NX-1]-Tt));
+		
+		TDeltaOld = TDelta;
+
+		if(T[NX-1]==T_tOld):
+			TDelta = -0.1*(T[NX-1]-Tt);
+		else:
+			TDelta= -0.1*(T[NX-1]-Tt)*(TDeltaOld)/(T[NX-1]-T_tOld);
+		
+		q = q + lambd[0]*TDelta;
+	
+		T_tOld = T[NX-1];
+
+	return T,q;
 
 def get_pressure(rho,p,Pin,z):
 	"""
@@ -236,7 +236,7 @@ def get_RealCond(Tt,Tb,P,height,fluidType,database="NIST"):
 
 	# now iterate (6 times is usually enough)
 	for k in range(6):
-		T,q = get_temperature2(z,Tt,Tb,lambd);
+		T,q = get_temperature(z,Tt,Tb,lambd);
 		p = get_pressure(rho,p,P0,z);
 
 		if database=="C":
