@@ -89,6 +89,7 @@ def get_temperature2(z,Tt,Tb,lambd):
 	HEIGHT        = z[-1]-z[0]
 	int_inf_lambd = np.zeros(NX)
 	q_array       = np.zeros(NX);
+	T			  = np.zeros(NX)
 
 	h = HEIGHT/(NX-1);
 	
@@ -235,7 +236,7 @@ def get_RealCond(Tt,Tb,P,height,fluidType,database="NIST"):
 
 	# now iterate (6 times is usually enough)
 	for k in range(6):
-		T,q = get_temperature2(z,T,Tt,Tb,lambd);
+		T,q = get_temperature2(z,Tt,Tb,lambd);
 		p = get_pressure(rho,p,P0,z);
 
 		if database=="C":
