@@ -1,26 +1,20 @@
-all: RealConProfile RealConProfileSingle RealConProfileSingle2
+all: RealConProfile 
 
 S=./src
 O=./obj
 
+RealConProfile: $O/RealConProfile.o $O/sf6.o $O/libheatcond.o
+	cc -o RealConProfile ${O}/RealConProfile.o ${O}/libheatcond.o ${O}/sf6.o -lm
 
-RealConProfile: $O/RealConProfile.o
-	cc -o RealConProfile RealConProfile.o gnuplot_i.o sf6.o -lm
+${O}/libheatcond.o: $(S)/libheatcond.c
+	cc -c $S/libheatcond.c
+	mv libheatcond.o $O/
 
-RealConProfileSingle: $O/RealConProfileSingle.o
-	cc -o RealConProfileSingle RealConProfileSingle.o gnuplot_i.o sf6.o -lm
-
-RealConProfileSingle2: $(O)/RealConProfileSingle2.o
-	cc -o RealConProfileSingle2 $(O)/RealConProfileSingle2.o gnuplot_i.o sf6.o -lm
-
-RealConProfile.o: $(S)/RealConProfile.c
-	cc -c $S/RealConProfile.c -o $O/RealConProfile.o
-
-RealConProfileSingle.o: $(S)/RealConProfileSingle.c
-	cc -c $S/RealConProfileSingle.c
-
-$(O)/RealConProfileSingle2.o: $(S)/RealConProfileSingle2.c
-	cc -c $S/RealConProfileSingle2.c -o ${O}/RealConProfileSingle2.o
 
 $(O)/RealConProfile.o: $(S)/RealConProfile.c
-	cc -c $S/RealConProfile.c -o ${O}/RealConProfile.o
+	cc -c $S/RealConProfile.c -fPIE
+	mv RealConProfile.o ${O}/
+
+$(O)/sf6.o: $(S)/sf6.c
+	cc -c $S/sf6.c -fPIE 
+	mv sf6.o ${O}/

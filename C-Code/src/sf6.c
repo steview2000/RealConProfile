@@ -28,10 +28,10 @@ All returned values are in cgs.
 
 ***********************************************************************/
 
-#include "header.h"
+#include "../include/header.h"
 #define NP 		100
-#define JMAX 		26
-#define DDT 		0.001
+#define JMAX 	26
+#define DDT 	0.001
 
 
 /* ******************************************************************** */

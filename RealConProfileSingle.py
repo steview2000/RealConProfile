@@ -11,14 +11,8 @@ import numpy as np
 import PyFluidProp as fluid
 
 #NX= 1000
-HEIGHT= 1.12 # in m for the G=1 cell HPCF
-#HEIGHT=0.3 # in m for the He cell of Urban et al.
-Tb= 30.#(21.431+11.858/2) # in degC
-Tt= 18.#(21.431-11.858/2)	# in degC
-P= 8.032e5 # in pa (at half-height)
 
 g=9.81; # gravity (in m/s^2)
-
 
 
 def get_temperature(z,Tt,Tb,lambd):
@@ -117,7 +111,7 @@ def get_pressure(rho,p,Pin,z):
 	for i in range(NX-1):
 		p[i+1] = p[i]-g*h*rho[i]	;
    
-	p0 = Pin-p[NX/2];
+	p0 = Pin-p[int(NX/2)];
 	
 	for i in range(NX):
 		p[i] = p[i]+ p0	
@@ -131,11 +125,11 @@ def get_prop_C(T,p):
 	"""
 
 	NX = np.size(T)
-	rho = np.zeros(NX)
-	lambd=np.zeros(NX)
-	alpha=np.zeros(NX)
-	rho_0=1;
-	lambd_0=1;
+	rho   = np.zeros(NX)
+	lambd = np.zeros(NX)
+	alpha = np.zeros(NX)
+	rho_0   = 1;
+	lambd_0 = 1;
 
 	for i in range(NX):
 		temp = T[i];
@@ -163,8 +157,10 @@ def get_prop_NIST(fluidType,T,p):
 		rho,lambd,nu,kappa,alpha = fluid.SF6_NIST(T,p*1e-5);
 	elif fluidType=="He":
 		rho,lambd,nu,kappa,alpha = fluid.He_NIST(T,p*1e-5);
+	elif fluidType=="N2":
+		rho,lambd,nu,kappa,alpha = fluid.N2_NIST(T,p*1e-5);
 	else:
-	    print("EROROR!\nFluid: "+fluidType+"unkown!\n")
+	    print("EROROR!\nFluid: "+fluidType+" unkown!\n")
 	    return
 
 	return lambd,rho,alpha;
@@ -198,16 +194,17 @@ def get_RealCond(Tt,Tb,P,height,fluidType,database="NIST"):
 	NX = 1000  # spatial resolution in z-direction (number of sampling points)
 	print("Using: %s\n\n"%database)
 	print("Height: %lf"%height)
+	print("Fluid: "+fluidType)
 
 	z		= np.zeros(NX) # z-coordinates
 	T		= np.zeros(NX) # array with vertical temperature values
 	p		= np.zeros(NX) # array with vertical pressure values 
-	pOld	 = np.zeros(NX)
-	rho	  = np.zeros(NX) # array with vertical density distribution
+	pOld    = np.zeros(NX)
+	rho	    = np.zeros(NX) # array with vertical density distribution
 	alpha	= np.zeros(NX) # array with veritcal expansivity
 	lambd	= np.zeros(NX) # array with therm conductivity
 	lambdOld = np.zeros(NX)
-	h		= height/(NX-1) # vertical steps
+	h	  	= height/(NX-1) # vertical steps
 	
 	q=1
 
@@ -224,6 +221,10 @@ def get_RealCond(Tt,Tb,P,height,fluidType,database="NIST"):
 			print("Height: %.3lf (m)\tT: %lf %lf (degC)\t P: %lf (bar)\n"%(height,Tt,Tb,1e-5*P))  ;
 	elif fluidType=="He":
 		rho_0,lambd_0,nu,kappa,alpha_0 = fluid.He_NIST(Tm,P0*1e-5);
+		print("Height: %.3lf (m)\tT: %lf %lf (degC)\t P: %lf (bar)\n"%(height,Tt,Tb,1e-5*P))  ;
+	elif fluidType=="N2":
+		rho_0,lambd_0,nu,kappa,alpha_0 = fluid.N2_NIST(Tm,P0*1e-5);
+		print("Height: %.3lf (m)\tT: %lf %lf (degC)\t P: %lf (bar)\n"%(height,Tt,Tb,1e-5*P))  ;
 	else:
 		print("ERROR!\nFluid "+fluidType+"is not in the database!")
 	
@@ -240,9 +241,9 @@ def get_RealCond(Tt,Tb,P,height,fluidType,database="NIST"):
 		p = get_pressure(rho,p,P0,z);
 
 		if database=="C":
-			lambd,rho,alpha=get_prop_C(T,p);
+			lambd,rho,alpha = get_prop_C(T,p);
 		else:
-			lambd,rho,alpha=get_prop_NIST(fluidType,T,p);
+			lambd,rho,alpha = get_prop_NIST(fluidType,T,p);
 
 	return q,z,T,p,rho,lambd
 
@@ -251,4 +252,10 @@ def get_RealCond(Tt,Tb,P,height,fluidType,database="NIST"):
 if __name__== "__main__":
     #fluid.PrepNISTData("He",0,7,0.,6) 
     #qN,zN,TN,pN,rhoN,lambdN = get_RealCond(np.array(Tt),np.array(Tb),np.array(P),HEIGHT,'NIST')
-    qN,zN,TN,pN,rhoN,lambdN = get_RealCond(Tt,Tb,P,HEIGHT,"SF6",'NIST')
+	HEIGHT= 2.24 # in m for the G=1 cell HPCF
+	Tb = 30.     #(21.431+11.858/2) # in degC
+	Tt = 18.     #(21.431-11.858/2)	# in degC
+	P  = 8.032e5 # in pa (at half-height)
+	qN,zN,TN,pN,rhoN,lambdN = get_RealCond(Tt,Tb,P,HEIGHT,"SF6",'C')
+
+	
