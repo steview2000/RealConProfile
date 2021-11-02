@@ -59,7 +59,7 @@ def get_temperature(z,Tt,Tb,lambd):
 
 def get_temperature2(z,T,Tt,Tb,lambd,q):
 	"""	
-	Calculates the temperature profile based on a z-array using an iterature method
+	Calculates the temperature profile based on a z-array using an iterative approach method
 	"""
 
 	NX     = np.size(z)
