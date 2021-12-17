@@ -71,14 +71,14 @@ def get_temperature2(z,T,Tt,Tb,lambd,q):
 	count  = 0;
 
 	while(err>0.0001):
-		count+=1;
-		low=0;
-		high=0;
-		T_tOld=T[NX-1];
-		T[0] = Tb; 
+		count += 1;
+		low    = 0;
+		high   = 0;
+		T_tOld = T[NX-1];
+		T[0]   = Tb;
 		
 		for i in range(NX-1):
-			k1 = -q * h/lambd[i];
+			k1     = -q * h/lambd[i];
 			T[i+1] = (T[i]+k1);
 			# start value
 	
