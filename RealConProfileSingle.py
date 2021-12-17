@@ -134,7 +134,7 @@ def get_prop_C(T,p):
 	for i in range(NX):
 		temp = T[i];
 		press = p[i]; # pa -> bar
-		rho_0,lambd_0,nu,kappa,alpha_0 = fluid.SF6_C(temp,press*1e-5);
+		rho_0,lambd_0,nu,kappa,alpha_0 = fluid.SF6_CoolProp(temp,press*1e-5);
 		rho[i] = rho_0;
 		lambd[i] = lambd_0;
 		alpha[i] = alpha_0;
@@ -215,7 +215,7 @@ def get_RealCond(Tt,Tb,P,height,fluidType,database="NIST"):
 	# Pobulating starting values:
 	if fluidType=="SF6":
 		if database=="C":
-	   		rho_0,lambd_0,nu,kappa,alpha_0 = fluid.SF6_C(Tm,P0*1e-5);
+	   		rho_0,lambd_0,nu,kappa,alpha_0 = fluid.SF6_CoolProp(Tm,P0*1e-5);
 		else:
 			rho_0,lambd_0,nu,kappa,alpha_0 = fluid.SF6_NIST(Tm,P0*1e-5);
 			print("Height: %.3lf (m)\tT: %lf %lf (degC)\t P: %lf (bar)\n"%(height,Tt,Tb,1e-5*P))  ;
