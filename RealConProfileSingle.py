@@ -256,6 +256,6 @@ if __name__== "__main__":
 	Tb = 30.     #(21.431+11.858/2) # in degC
 	Tt = 18.     #(21.431-11.858/2)	# in degC
 	P  = 8.032e5 # in pa (at half-height)
-	qN,zN,TN,pN,rhoN,lambdN = get_RealCond(Tt,Tb,P,HEIGHT,"SF6",'C')
+	qN,zN,TN,pN,rhoN,lambdN = get_RealCond(Tt,Tb,P,HEIGHT,"SF6",'NIST')
 
 	
