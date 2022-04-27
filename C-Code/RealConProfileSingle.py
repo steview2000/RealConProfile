@@ -6,14 +6,14 @@
 import sys
 import numpy as np
 import matplotlib.pyplot as py
-sys.path.append('/home/sweiss/Convection/FluidsProp') # for the FluidProp module
+#sys.path.append('/home/sweiss/Convection/FluidsProp') # for the FluidProp module
 import FluidProp as fluid
 
 NX= 1000
 HEIGHT= 1.12 # in m
-Tb= (21.431+11.858/2) # in degC
-Tt= (21.431-11.858/2)	# in degC
-P= 8.032e5 # in pa (at half-height)
+Tb = 25.0 # in degC
+Tt = 15.0 # in degC
+P = 8.0e5 # in pa (at half-height)
 PI= 3.14159
 
 g=9.81; # gravity (in m/s^2)
@@ -154,25 +154,14 @@ def get_prop(T,p,lambda,rho,alpha):
 }
 
 if __name__== "__main__":
-	#double dt,h,A,AOld,d;
-	#double tstart,tend,t,ratio,TDeltaOld,Tmax;
-	#double P0,T0,lambda_0,rho_0,alfa,comp,kappa,nu,cp,psi,lewis;
-	#double z[NX]; // the vertical coordinate
-	#double T[NX],T_bOld;
-	#double diffx,k1,k2,k3,k4;
-	#double q;
-	#double intensity,intensityOld;
-	#int count,i,j,low,high,k;
-
-        z = np.zeros(NX) 
+    z = np.zeros(NX) 
 	T = np.zeros(NX) 
-        p = np.zeros(NX)
-        pOld=np.zeros(NX)
-        rho = np.zeros(NX)
-        alpha=np.zeros(NX)
-        lambda=np.zeros(NX)
-        lambdaOld=np.zeros(N)
-
+    p = np.zeros(NX)
+    pOld=np.zeros(NX)
+    rho = np.zeros(NX)
+    alpha=np.zeros(NX)
+    lambda=np.zeros(NX)
+    lambdaOld=np.zeros(N)
 
 	h = HEIGHT/(NX-1); # there are NX points but only NX-1 intervalls	
 	

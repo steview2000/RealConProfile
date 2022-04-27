@@ -257,5 +257,8 @@ if __name__== "__main__":
 	Tt = 18.     #(21.431-11.858/2)	# in degC
 	P  = 8.032e5 # in pa (at half-height)
 	qN,zN,TN,pN,rhoN,lambdN = get_RealCond(Tt,Tb,P,HEIGHT,"SF6",'NIST')
+	print("qN: ",qN)
+	header_string = "z,Tm,p,rho,lambda"
+	np.savetxt('testout-py.csv',np.array([zN,TN,pN,rhoN,lambdN]).transpose(),header=header_string,fmt="%.4g",delimiter=",")
 
 	
