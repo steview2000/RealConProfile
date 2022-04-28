@@ -19,3 +19,6 @@ $(O)/RealConProfile.o: $(S)/RealConProfile.c
 #$(O)/sf6.o: $(S)/sf6.c
 #	cc -c $S/sf6.c -fPIE 
 #	mv sf6.o ${O}/
+
+install:
+	cp RealConProfile ${HOME}/bin

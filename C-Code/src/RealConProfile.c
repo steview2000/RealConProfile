@@ -15,6 +15,7 @@ double e,D,r,dT,Tt,Tb,height,P,P0;
 extern double z[NX];
 extern double q;
 extern double h;
+char fluid[100];
 
 int main(int argc, char **argv){
 	double dt,h,A,AOld,d;
@@ -28,27 +29,26 @@ int main(int argc, char **argv){
 	double intensity,intensityOld;
 	double Tm,dT,Ra_m,Ra_c,Nu_m,Nu_c;
 	int count,i,j,low,high,k,N,entries;
-	char fluid[100];
 	FILE *fp;
 	
 	if (argc != 2){
 		printf("Usage: %s [fluid]\n",argv[0]);
-		printf("\n\n");
-		printf("\
-	Fluids:\n\
-		Air
-		Hydrogen
-		Helium
-		Nitrogen
-		CO2
-		Xenon
-		SF6
-		Ethane
-		Water
-		Acetone
-		Methanol
-		Ethanol
-		");
+		printf("\n");
+		printf(\
+	"Fluids:\n"
+    "	Air     \n"
+    "	Hydrogen\n"
+    "	Helium  \n"
+    "	Nitrogen\n"
+    "	CO2     \n"
+    "	Xenon   \n"
+    "	SF6     \n"
+    "	Ethane  \n"
+    "	Water   \n"
+    "	Acetone \n"
+    "	Methanol\n"
+    "	Ethanol \n"
+		);
 		exit(-1);
 	}
 	snprintf(fluid,100,argv[1]);
@@ -72,7 +72,7 @@ int main(int argc, char **argv){
 	Tt += 273.15;		
 	T0 = (Tb+Tt)/2.;
 	// Pobulating starting values:
-	getCoolProp(FLUID, T0, P0, &rho_0, &alpha_0, &comp, &lambda_0, &kappa, &nu, &cp, &psi, &lewis,FLAG);
+	getCoolProp(fluid, T0, P0, &rho_0, &alpha_0, &comp, &lambda_0, &kappa, &nu, &cp, &psi, &lewis,FLAG);
 	
 	for (i=0;i<NX;i++){
 		rho[i]    = rho_0;
@@ -82,7 +82,7 @@ int main(int argc, char **argv){
 		p[i] = P0;
 	}	
 	//printf("rho_0: %lf\t,lambda: %lf\n",rho_0,lambda_0);
-	q = 1;
+	q = 0.01;
 	
 	for (k=0;k<7;k++){
 		q= get_temperature(z,T,lambda,q);
@@ -127,7 +127,7 @@ double get_temperature(double *z,double *T,double *lambda,double q){
 		// Euler integration
 		for (i=0;i<NX;i++) { 
 			k1 = -q * h/lambda[i];
-			//printf("lambda: %.4lf\n",lambda[i]);
+			printf("lambda: %.4lf\n",lambda[i]);
 			T[i+1] = (T[i]+k1);//6+k2/3+k3/3+k4/6);
 			// start value
 		};
@@ -147,7 +147,7 @@ double get_temperature(double *z,double *T,double *lambda,double q){
 		q = q + lambda[0]*TDelta;
 	
 		T_tOld = T[NX-1];
-		//printf("Err: %lf\t q: %lf\n",err,q);	
+		printf("Err: %lf\t q: %lf\n",err,q);	
 
 	}; // end while
 	//printf("Done get_temp\n");
@@ -212,7 +212,7 @@ int get_prop(double *T, double *p, double *lambda,double *rho, double *alpha){
 		press = p[i]; 
         //printf("%d: temp: %.4lf\t press: %.4lf\n",i,temp,press);
 		
-		getCoolProp(FLUID, temp, press, &rho_0, &alpha_0, &comp, &lambda_0, &kappa, &nu, &cp, &psi, &lewis,FLAG);
+		getCoolProp(fluid, temp, press, &rho_0, &alpha_0, &comp, &lambda_0, &kappa, &nu, &cp, &psi, &lewis,FLAG);
 		rho[i]    = rho_0;
 		lambda[i] = lambda_0;
 		alpha[i]  = alpha_0;
