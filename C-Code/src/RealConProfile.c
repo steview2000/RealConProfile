@@ -7,7 +7,7 @@
 #include "libheatcond.h"
 #include "libFluidPropC.h"
 
-#define FLUID "SF6"
+//#define FLUID "SF6"
 #define FLAG "HEOS"
 
 double e,D,r,dT,Tt,Tb,height,P,P0;
@@ -16,7 +16,7 @@ extern double z[NX];
 extern double q;
 extern double h;
 
-int main(){
+int main(int argc, char **argv){
 	double dt,h,A,AOld,d;
 	double tstart,tend,t,ratio,TDeltaOld,Tmax,Tc;
 	double T0,lambda_0,rho_0,alpha_0,comp,kappa,nu,cp,psi,lewis;
@@ -26,10 +26,32 @@ int main(){
 	double diffx,k1,k2,k3,k4;
 	double q;
 	double intensity,intensityOld;
-
 	double Tm,dT,Ra_m,Ra_c,Nu_m,Nu_c;
 	int count,i,j,low,high,k,N,entries;
+	char fluid[100];
 	FILE *fp;
+	
+	if (argc != 2){
+		printf("Usage: %s [fluid]\n",argv[0]);
+		printf("\n\n");
+		printf("\
+	Fluids:\n\
+		Air
+		Hydrogen
+		Helium
+		Nitrogen
+		CO2
+		Xenon
+		SF6
+		Ethane
+		Water
+		Acetone
+		Methanol
+		Ethanol
+		");
+		exit(-1);
+	}
+	snprintf(fluid,100,argv[1]);
 
 	printf("Height [m]: ");
 	scanf("%lf",&height);

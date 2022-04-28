@@ -1,4 +1,4 @@
-
+#!/usr/bin/python3
 # This program calculates the real conducted heat in RBC, by integrating the heat equation (shooting method) taken into
 # consideration different pressures (hydrostatic) and the fluid properties at any vertical position
 #
@@ -252,13 +252,17 @@ def get_RealCond(Tt,Tb,P,height,fluidType,database="NIST"):
 if __name__== "__main__":
     #fluid.PrepNISTData("He",0,7,0.,6) 
     #qN,zN,TN,pN,rhoN,lambdN = get_RealCond(np.array(Tt),np.array(Tb),np.array(P),HEIGHT,'NIST')
-	HEIGHT= 2.24 # in m for the G=1 cell HPCF
-	Tb = 30.     #(21.431+11.858/2) # in degC
-	Tt = 18.     #(21.431-11.858/2)	# in degC
-	P  = 8.032e5 # in pa (at half-height)
+	#HEIGHT= 2.24 # in m for the G=1 cell HPCF
+	#Tb = 30.     #(21.431+11.858/2) # in degC
+	#Tt = 18.     #(21.431-11.858/2)	# in degC
+	#P  = 8.032e5 # in pa (at half-height)
+	HEIGHT = float(input("Height: "))
+	P = float(input("Press: "))*1e5
+	Tb =float(input("Tb: "))
+	Tt =float(input("Tt: "))
 	qN,zN,TN,pN,rhoN,lambdN = get_RealCond(Tt,Tb,P,HEIGHT,"SF6",'NIST')
-	print("qN: ",qN)
-	header_string = "z,Tm,p,rho,lambda"
-	np.savetxt('testout-py.csv',np.array([zN,TN,pN,rhoN,lambdN]).transpose(),header=header_string,fmt="%.4g",delimiter=",")
+	print("q[W/m^2]: ",qN)
+	#header_string = "z,Tm,p,rho,lambda"
+	#np.savetxt('testout-py.csv',np.array([zN,TN,pN,rhoN,lambdN]).transpose(),header=header_string,fmt="%.4g",delimiter=",")
 
 	
