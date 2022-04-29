@@ -8,7 +8,8 @@
 #include "libFluidPropC.h"
 
 //#define FLUID "SF6"
-#define FLAG "HEOS"
+//#define FLAG "HEOS"
+#define FLAG "SLOW"
 
 double e,D,r,dT,Tt,Tb,height,P,P0;
 
@@ -73,7 +74,7 @@ int main(int argc, char **argv){
 	T0 = (Tb+Tt)/2.;
 	// Pobulating starting values:
 	getCoolProp(fluid, T0, P0, &rho_0, &alpha_0, &comp, &lambda_0, &kappa, &nu, &cp, &psi, &lewis,FLAG);
-	
+	//printf("rho_0: %lf\t,lambda: %lf\n",rho_0,lambda_0);
 	for (i=0;i<NX;i++){
 		rho[i]    = rho_0;
 		lambda[i] = lambda_0;
@@ -81,7 +82,6 @@ int main(int argc, char **argv){
 		z[i] = i*h;
 		p[i] = P0;
 	}	
-	//printf("rho_0: %lf\t,lambda: %lf\n",rho_0,lambda_0);
 	q = 0.01;
 	
 	for (k=0;k<7;k++){
@@ -127,7 +127,7 @@ double get_temperature(double *z,double *T,double *lambda,double q){
 		// Euler integration
 		for (i=0;i<NX;i++) { 
 			k1 = -q * h/lambda[i];
-			printf("lambda: %.4lf\n",lambda[i]);
+			//printf("lambda: %.4lf\n",lambda[i]);
 			T[i+1] = (T[i]+k1);//6+k2/3+k3/3+k4/6);
 			// start value
 		};
@@ -147,7 +147,7 @@ double get_temperature(double *z,double *T,double *lambda,double q){
 		q = q + lambda[0]*TDelta;
 	
 		T_tOld = T[NX-1];
-		printf("Err: %lf\t q: %lf\n",err,q);	
+		//printf("Err: %lf\t q: %lf\n",err,q);	
 
 	}; // end while
 	//printf("Done get_temp\n");
@@ -211,10 +211,14 @@ int get_prop(double *T, double *p, double *lambda,double *rho, double *alpha){
 		temp  = T[i];
 		press = p[i]; 
         //printf("%d: temp: %.4lf\t press: %.4lf\n",i,temp,press);
-		
 		getCoolProp(fluid, temp, press, &rho_0, &alpha_0, &comp, &lambda_0, &kappa, &nu, &cp, &psi, &lewis,FLAG);
 		rho[i]    = rho_0;
-		lambda[i] = lambda_0;
+		if (isnan(lambda_0)){
+			lambda[i] = lambda[i-1];
+			printf("Lambda isnan!!");
+			printf("i: %d\tT: %.5f\tp: %.2f\n",i,T[i],p[i]);
+		} else	lambda[i] = lambda_0;
+		
 		alpha[i]  = alpha_0;
 	}
 	return 0;
