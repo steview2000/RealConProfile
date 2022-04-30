@@ -9,7 +9,7 @@
 
 //#define FLUID "SF6"
 //#define FLAG "HEOS"
-#define FLAG "SLOW"
+#define FLAG "REFPROP"
 
 double e,D,r,dT,Tt,Tb,height,P,P0;
 
