@@ -90,7 +90,7 @@ int main(int argc, char **argv){
     	get_pressure(rho,p,z);
 		get_prop(T,p,lambda,rho,alpha);
 	}	
-	printf("q[W/m^2]: %.4lf \n",q);	
+	printf("q[W/m^2]: %.6g \n",q);	
 	//	Temperature profile (shooting method):
 	//getchar();
 	

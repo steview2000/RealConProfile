@@ -260,7 +260,14 @@ if __name__== "__main__":
 	P = float(input("Press: "))*1e5
 	Tb =float(input("Tb: "))
 	Tt =float(input("Tt: "))
-	qN,zN,TN,pN,rhoN,lambdN = get_RealCond(Tt,Tb,P,HEIGHT,"SF6",'NIST')
+	if sys.argv[1]=='SF6':
+		qN,zN,TN,pN,rhoN,lambdN = get_RealCond(Tt,Tb,P,HEIGHT,"SF6",'NIST')
+	elif sys.argv[1]=='Helium':
+		qN,zN,TN,pN,rhoN,lambdN = get_RealCond(Tt,Tb,P,HEIGHT,"He",'NIST')
+	else:
+		print(sys.argv[1]+" not defined!")
+		sys.exit(1)
+
 	print("q[W/m^2]: ",qN)
 	#header_string = "z,Tm,p,rho,lambda"
 	#np.savetxt('testout-py.csv',np.array([zN,TN,pN,rhoN,lambdN]).transpose(),header=header_string,fmt="%.4g",delimiter=",")
