@@ -14,14 +14,16 @@ git clone https://github.com/steview2000/RealConProfile.git
 
 3. Enter directory and compile:
 
-		`
-		cd RealConProfile 
-		make
-		`
+```
+cd RealConProfile 
+make
+```
+		
 4. Install in ${HOME}/bin
-		```
-		make install
-		```
+```
+make install
+```
+
 ## Dependencies:
 	* libFluidPropC (https://github.com/steview2000/libFluidPropC.git)
 
