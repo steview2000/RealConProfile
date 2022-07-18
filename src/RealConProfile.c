@@ -52,7 +52,7 @@ int main(int argc, char **argv){
 		);
 		exit(-1);
 	}
-	snprintf(fluid,100,argv[1]);
+	snprintf(fluid,100,"%s",argv[1]);
 
 	printf("Height [m]: ");
 	scanf("%lf",&height);
