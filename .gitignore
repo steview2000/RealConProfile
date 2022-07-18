@@ -1,6 +1,6 @@
 build
 dits
 dist/
-C-Code/obj
+C-Code/obj/*
 RealConProfileSingle.egg-info
 C-Code/RealConProfile
