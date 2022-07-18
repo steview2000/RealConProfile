@@ -4,18 +4,21 @@ This code calculates the conductive heat transport between two plates within a f
  as descriped in  O. Shishkina, S. Weiss, and E. Bodenschatz, , Phys. Rev. Fluids, 1(6), 062301(R)
 
 ## Installation
-	1. Make sure libFluidPropC is installed (which itself depends on CoolProp)
-	2. Clone this repository: 
 
-		`git clone https://github.com/steview2000/RealConProfile.git`
+1. Make sure libFluidPropC is installed (which itself depends on CoolProp)
+2. Clone this repository: 
 
-	3. Enter directory and compile:
+```
+git clone https://github.com/steview2000/RealConProfile.git
+```
+
+3. Enter directory and compile:
 
 		`
 		cd RealConProfile 
 		make
 		`
-	4. Install in ${HOME}/bin
+4. Install in ${HOME}/bin
 		```
 		make install
 		```
