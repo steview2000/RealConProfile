@@ -8,8 +8,8 @@
 #include "libFluidPropC.h"
 
 //#define FLUID "SF6"
-//#define FLAG "HEOS"
-#define FLAG "REFPROP"
+#define FLAG "HEOS"
+//#define FLAG "REFPROP"
 
 double e,D,r,dT,Tt,Tb,height,P,P0;
 
