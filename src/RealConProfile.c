@@ -1,22 +1,27 @@
 // This program calculates the real conducted heat in RBC, by integrating the heat equation (shooting method) taken into
 // consideration different pressures (hydrostatic) and the fluid properties at any vertical position
 
+#include <ctype.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 #include "libheatcond.h"
 #include "libFluidPropC.h"
 
-//#define FLUID "SF6"
+// If FLAG is set to HEOS, fluid properties are directly calculated via CoolProp
 #define FLAG "HEOS"
+// If FLAG is set to REFPROP, fluid properties are calculated using REFPROP (NIST)  via the CoolProp
+// interface
 //#define FLAG "REFPROP"
 
-double e,D,r,dT,Tt,Tb,height,P,P0;
+double e,D,r,dT,Tt=999,Tb=999,height=999,P=999,P0;
 
 extern double z[NX];
 extern double q;
 extern double h;
-char fluid[100];
+char fluid[100]="fluidnotyetdefined";
 
 int main(int argc, char **argv){
 	double dt,h,A,AOld,d;
@@ -28,13 +33,47 @@ int main(int argc, char **argv){
 	double diffx,k1,k2,k3,k4;
 	double q;
 	double intensity,intensityOld;
-	double Tm,dT,Ra_m,Ra_c,Nu_m,Nu_c;
+	double Tm,dT;
 	int count,i,j,low,high,k,N,entries;
+	char opt;
 	FILE *fp;
 	
-	if (argc != 2){
-		printf("Usage: %s [fluid]\n",argv[0]);
-		printf("\n");
+	// handingling arguments
+	
+	while ((opt=getopt(argc,argv,"f:b:t:P:H:h:")) != -1 ){
+		switch (opt){
+			case 'f':
+				snprintf(fluid,20,"%s",optarg);
+				printf("fluid: %s\n",fluid);
+				break;
+			case 'b':
+				Tb = atof(optarg);
+				printf("Tb: %lf degC\n",Tb);
+				break;
+			case 't':
+				 Tt= atof(optarg);
+				printf("Tt: %lf degC\n",Tt);
+				break;
+			case 'P':
+				P = atof(optarg);
+				printf("P: %lf bar\n",P);
+				break;
+			case 'H':
+				height = atof(optarg);
+				printf("H: %lf m\n",height);
+				break;
+			case 'h':
+				printUsage(argv);
+				break;
+			default:
+				printUsage(argv);
+				exit(-1);
+		}	
+	}
+	//printf("Fluid: %s\n",fluid);
+	//printf("Compare: %d\n",strncmp(fluid,"fluidnotyetdefines",16));	
+	if (strncmp(fluid,"fluidnotyetdefined",16)==0) {
+		printf("Possbible fluids:\n");
 		printf(\
 	"Fluids:\n"
     "	Air     \n"
@@ -50,9 +89,7 @@ int main(int argc, char **argv){
     "	Methanol\n"
     "	Ethanol \n"
 		);
-		exit(-1);
-	}
-	snprintf(fluid,100,"%s",argv[1]);
+	};
 
 	printf("Height [m]: ");
 	scanf("%lf",&height);
@@ -91,15 +128,7 @@ int main(int argc, char **argv){
 		get_prop(T,p,lambda,rho,alpha);
 	}	
 	printf("q[W/m^2]: %.6g \n",q);	
-	//	Temperature profile (shooting method):
-	//getchar();
 	
-	//fp = fopen("testout-c.csv","w");
-	//fprintf(fp,"# z[m], T,p,rho,lambda\n");
-	//for (i=0;i<NX;i++){
-	//	fprintf(fp,"%.4lf,%.4lf,%.5g,%.5g,%.5g\n",z[i],T[i],p[i],rho[i],lambda[i]);
-	//}
-	//fclose(fp);
 	
 	return 0;
 }
@@ -127,7 +156,6 @@ double get_temperature(double *z,double *T,double *lambda,double q){
 		// Euler integration
 		for (i=0;i<NX;i++) { 
 			k1 = -q * h/lambda[i];
-			//printf("lambda: %.4lf\n",lambda[i]);
 			T[i+1] = (T[i]+k1);//6+k2/3+k3/3+k4/6);
 			// start value
 		};
@@ -143,14 +171,11 @@ double get_temperature(double *z,double *T,double *lambda,double q){
 		if (T[NX-1]==T_tOld) TDelta = -0.1*(T[NX-1]-Tt);
 		else TDelta= -0.1*(T[NX-1]-Tt)*(TDeltaOld)/(T[NX-1]-T_tOld);
 
-		//printf("lambda: %lf\t",lambda[0]);	
 		q = q + lambda[0]*TDelta;
 	
 		T_tOld = T[NX-1];
-		//printf("Err: %lf\t q: %lf\n",err,q);	
 
 	}; // end while
-	//printf("Done get_temp\n");
 	return q;
 }
 
@@ -160,27 +185,20 @@ int get_temperature2(double *z, double *T, double *lambda, double q){
 	double h;
 	int i;
 
-	//qOut = open("q.txt","w");
 	h = height/(NX-1);
 	
 	dT = Tb-Tt;
 	int_inf_lambda[0] = lambda[0];
     printf("dT: %lf\tTb: %lf\n",dT,Tb);
 	for (i=0;i<NX-1;i++){
-	    //print("lambda: %lf\t%lf\n",lambda[i],h);
 	    int_inf_lambda[i+1] = int_inf_lambda[i]+h/lambda[i];
-        //printf("int: %lf\n",int_inf_lambda[i+1]);
 	}	
 	
 	for (i=0;i<NX;i++){
-        //printf("lambda: %lf\t%lf\n",int_inf_lambda[i],int_inf_lambda[NX-1]);
 	    T[i] = Tt + dT*int_inf_lambda[i]/int_inf_lambda[NX-1];
 	    if (i>0) q_array[i] = lambda[i]*(T[i]-T[i-1])/h;
 
-	   // fprintf(qOut,"%lf\t%lf\n",T[i],q_array[i]);	
-       //	printf("T: %lf\tq: %lf\tlambda: %lf\t\n",T[i],q_array[i],lambda[i]);	
 	}	
-	//fclose(qOut);
 	
 	return 0;
 }
@@ -224,5 +242,32 @@ int get_prop(double *T, double *p, double *lambda,double *rho, double *alpha){
 	return 0;
 }
 
-
+int printUsage(char **argv){
+		printf("Usage: %s [option] [value] \n",argv[0]);
+		printf("Calculates the conductive heat flux through a fluid of varying heat conductivity\n");
+		printf(\
+	"Options are optional and don't have to be provided.\n"
+	"\t-h\t prints this help message\n"
+	"\t-f\t <fluids>\t defines the fluid"
+	"\t\n"
+	"\t\t Possible fluids:\n"
+    "\t\t	Air     \n"
+    "\t\t	Hydrogen\n"
+    "\t\t	Helium  \n"
+    "\t\t	Nitrogen\n"
+    "\t\t	CO2     \n"
+    "\t\t	Xenon   \n"
+    "\t\t	SF6     \n"
+    "\t\t	Ethane  \n"
+    "\t\t	Water   \n"
+    "\t\t	Acetone \n"
+    "\t\t	Methanol\n"
+    "\t\t	Ethanol \n\n"
+	"\t-b <value> bottom plate temperature in degree Celsius\n"
+	"\t-t <value> top plate temperature in degree Celsius\n"
+	"\t-P <value> pressure in bar \n"
+	"\t-H <value> height of the cell in meter \n\n"
+	);
+	return 0;
+}
 

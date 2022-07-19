@@ -10,6 +10,7 @@ double get_temperature(double *z,double *T,double *lambda,double q);
 int get_temperature2(double *,double *,double *,double );
 int get_pressure(double *rho,double *p,double *z);
 int get_prop(double *T,double *p,double *lambda,double *rho,double *alpha);
+int printUsage(char **);
 void sf6(double, double, double *, double *,double *, double *, double *, double *, double *);
 
 #endif
