@@ -92,6 +92,7 @@ int main(int argc, char **argv){
 		scanf("%s",fluid);
 		printf("%s\n",fluid);
 	};
+	
 	if (height==999){
 		printf("Height [m]: ");
 		scanf("%lf",&height);
