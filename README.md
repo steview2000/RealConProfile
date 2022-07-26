@@ -26,8 +26,37 @@ make install
 ```
 
 ## Dependencies:
-	* libFluidPropC (https://github.com/steview2000/libFluidPropC.git)
+	* libFluidPropC (https://github.com/steview2000/libFluidProp.git)
 
 ## Usage: 
+Usage: ./RealConProfile \[option\] \[value\] 
+Calculates the conductive heat flux through a fluid of varying heat conductivity
+Options are optional and don't have to be provided.
+        -h       prints this help message
+        -f       <fluids>        defines the fluid
+                 Possible fluids:
+                        Air     
+                        Hydrogen
+                        Helium  
+                        Nitrogen
+                        CO2     
+                        Xenon   
+                        SF6     
+                        Ethane  
+                        Water   
+                        Acetone 
+                        Methanol
+                        Ethanol 
 
+        -b <value> bottom plate temperature in degree Celsius
+        -t <value> top plate temperature in degree Celsius
+        -P <value> pressure in bar 
+        -H <value> height of the cell in meter 
+
+## Example
+The following code calculates the heat flux for SF6 at P=10bar with bottom plate temperate 15 C and
+top plate temperature 35 C in a 2m tall cell:
+```
+./RealConProfile -f SF6 -b 15 -t 35 -P 10 -H 2
+```
 
