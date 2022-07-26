@@ -90,15 +90,23 @@ int main(int argc, char **argv){
     "	Ethanol \n"
 		);
 	};
-
-	printf("Height [m]: ");
-	scanf("%lf",&height);
-	printf("\nP [bar]: ");	
-	scanf("%lf",&P);
-	printf("Tb [degC]: ");	
-	scanf("%lf",&Tb);
-	printf("\nTt [degC]: ");
-	scanf("%lf",&Tt);
+	
+	if (height==999){
+		printf("Height [m]: ");
+		scanf("%lf",&height);
+	}
+	if (P==999){
+		printf("\nP [bar]: ");	
+		scanf("%lf",&P);
+	}
+	if (Tb==999){
+		printf("Tb [degC]: ");	
+		scanf("%lf",&Tb);
+	}
+	if (Tt==999){
+		printf("\nTt [degC]: ");
+		scanf("%lf",&Tt);
+	}
 	printf("\n");	
 	
 	h = height/(NX-1); // there are NX points but only NX-1 intervalls	
